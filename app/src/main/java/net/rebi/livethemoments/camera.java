@@ -33,7 +33,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -44,13 +43,13 @@ import java.util.List;
 
 public class camera extends AppCompatActivity {
 
-    private final static SparseIntArray ORINTATIONS = new SparseIntArray ( );
+    private final static SparseIntArray ORIENTATIONS = new SparseIntArray ( );
 
     static {
-        ORINTATIONS.append ( Surface.ROTATION_0 , 90 );
-        ORINTATIONS.append ( Surface.ROTATION_90 , 0 );
-        ORINTATIONS.append ( Surface.ROTATION_180 , 270 );
-        ORINTATIONS.append ( Surface.ROTATION_270 , 180 );
+        ORIENTATIONS.append ( Surface.ROTATION_0 , 90 );
+        ORIENTATIONS.append ( Surface.ROTATION_90 , 0 );
+        ORIENTATIONS.append ( Surface.ROTATION_180 , 270 );
+        ORIENTATIONS.append ( Surface.ROTATION_270 , 180 );
     }
 
     Button                 Capture;
@@ -87,10 +86,10 @@ public class camera extends AppCompatActivity {
             cameraDevice = null;
         }
     };
-    private ImageReader imageReader;
-    private File        file;
-    private int         cameraIndex = 1;
-    private int         outputSize  = 0;
+    private       ImageReader                imageReader;
+    private       File                       file;
+    private       int                        cameraIndex   = 0;
+    private       int                        outputSize    = 0;
     TextureView.SurfaceTextureListener surfaceTextureListener =
             new TextureView.SurfaceTextureListener ( ) {
                 @Override
@@ -271,13 +270,14 @@ public class camera extends AppCompatActivity {
         captureBuilder.set ( CaptureRequest.CONTROL_MODE , CameraMetadata.CONTROL_MODE_AUTO );
 
         int rotation = getWindowManager ( ).getDefaultDisplay ( ).getRotation ( );
-        captureBuilder.set ( CaptureRequest.JPEG_ORIENTATION , ORINTATIONS.get ( rotation ) );
+        captureBuilder.set ( CaptureRequest.JPEG_ORIENTATION , ORIENTATIONS.get ( rotation ) );
 
         Long   tsLong = System.currentTimeMillis ( ) / 1000;
         String ts     = tsLong.toString ( );
 
-        file = new File ( Environment.getExternalStorageDirectory ( ) + "/Live Moments/" + ts +
-                          ".jpg" );
+        file =
+                new File ( Environment.getExternalStorageDirectory ( ) + "/" + ts +
+                           ".jpg" );
 
 
         ImageReader.OnImageAvailableListener readerListener =
@@ -286,19 +286,19 @@ public class camera extends AppCompatActivity {
                     public void onImageAvailable ( ImageReader reader ) {
                         Image image = null;
 
-                        image = reader.acquireLatestImage ();
-                        ByteBuffer buffer = image.getPlanes ()[0].getBuffer ();
+                        image = reader.acquireLatestImage ( );
+                        ByteBuffer buffer = image.getPlanes ( )[ 0 ].getBuffer ( );
 
-                        byte[] bytes = new byte[buffer.capacity ()];
+                        byte[] bytes = new byte[ buffer.capacity ( ) ];
                         buffer.get ( bytes );
                         try {
-                            save(bytes);
+                            save ( bytes );
                         }
                         catch ( IOException e ) {
                             e.printStackTrace ( );
-                        }finally {
-                            if ( image != null ){
-                                image.close ();
+                        } finally {
+                            if ( image != null ) {
+                                image.close ( );
                             }
                         }
 
@@ -306,28 +306,33 @@ public class camera extends AppCompatActivity {
                     }
                 };
 
-        reader.setOnImageAvailableListener(readerListener, mBackgroundHandler);
+        reader.setOnImageAvailableListener ( readerListener , mBackgroundHandler );
 
-        final CameraCaptureSession.CaptureCallback captureListener = new CameraCaptureSession.CaptureCallback ( ) {
-            @Override
-            public void onCaptureCompleted ( CameraCaptureSession session , CaptureRequest request , TotalCaptureResult result ) {
-                super.onCaptureCompleted ( session , request , result );
-                Toast.makeText ( camera.this , "Saved" , Toast.LENGTH_SHORT ).show ( );
-                try {
-                    createCameraPreview ();
-                }
-                catch ( CameraAccessException e ) {
-                    e.printStackTrace ( );
-                }
-            }
-        };
+        final CameraCaptureSession.CaptureCallback captureListener =
+                new CameraCaptureSession.CaptureCallback ( ) {
+                    @Override
+                    public void onCaptureCompleted ( CameraCaptureSession session ,
+                                                     CaptureRequest request ,
+                                                     TotalCaptureResult result ) {
+                        super.onCaptureCompleted ( session , request , result );
+                        Toast.makeText ( camera.this , "Saved" , Toast.LENGTH_SHORT ).show ( );
+                        try {
+                            createCameraPreview ( );
+                        }
+                        catch ( CameraAccessException e ) {
+                            e.printStackTrace ( );
+                        }
+                    }
+                };
 
 
-        cameraDevice.createCaptureSession ( outputSurfaces , new CameraCaptureSession.StateCallback ( ) {
+        cameraDevice.createCaptureSession ( outputSurfaces ,
+                                            new CameraCaptureSession.StateCallback ( ) {
             @Override
             public void onConfigured ( CameraCaptureSession session ) {
                 try {
-                    session.capture(captureBuilder.build (), captureListener, mBackgroundHandler);
+                    session.capture ( captureBuilder.build ( ) , captureListener ,
+                                      mBackgroundHandler );
                 }
                 catch ( CameraAccessException e ) {
                     e.printStackTrace ( );
@@ -338,18 +343,18 @@ public class camera extends AppCompatActivity {
             public void onConfigureFailed ( CameraCaptureSession session ) {
 
             }
-        },mBackgroundHandler );
+        } , mBackgroundHandler );
 
     }
 
     private void save ( byte[] bytes ) throws IOException {
         OutputStream outputStream = null;
 
-        outputStream = new FileOutputStream(file);
+        outputStream = new FileOutputStream ( file );
 
         outputStream.write ( bytes );
 
-        outputStream.close ();
+        outputStream.close ( );
     }
 
     @Override

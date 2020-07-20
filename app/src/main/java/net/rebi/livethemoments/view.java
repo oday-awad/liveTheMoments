@@ -12,5 +12,6 @@ public class view extends AppCompatActivity {
         super.onCreate ( savedInstanceState );
         setContentView ( R.layout.view );
         getWindow ( ).addFlags ( WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON );
+        getWindow ( ).addFlags ( WindowManager.LayoutParams.FLAG_FULLSCREEN );
     }
 }

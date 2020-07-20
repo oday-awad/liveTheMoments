@@ -28,7 +28,6 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -55,7 +54,7 @@ public class camera2 extends Fragment {
         ORIENTATIONS.append ( Surface.ROTATION_270 , 180 );
     }
 
-//    Button                 Capture;
+    //    Button                 Capture;
     TextureView            textureView;
     CameraDevice           cameraDevice;
     CameraCaptureSession   cameraCaptureSession;
@@ -139,26 +138,26 @@ public class camera2 extends Fragment {
 
         cameraDevice.createCaptureSession ( Arrays.asList ( surface ) ,
                                             new CameraCaptureSession.StateCallback ( ) {
-                                                @Override
-                                                public void onConfigured ( CameraCaptureSession session ) {
-                                                    if ( cameraDevice == null ) {
-                                                        return;
-                                                    }
-                                                    cameraCaptureSession = session;
-                                                    try {
-                                                        updatePreview ( );
-                                                    }
-                                                    catch ( CameraAccessException e ) {
-                                                        e.printStackTrace ( );
-                                                    }
-                                                }
+            @Override
+            public void onConfigured ( CameraCaptureSession session ) {
+                if ( cameraDevice == null ) {
+                    return;
+                }
+                cameraCaptureSession = session;
+                try {
+                    updatePreview ( );
+                }
+                catch ( CameraAccessException e ) {
+                    e.printStackTrace ( );
+                }
+            }
 
-                                                @Override
-                                                public void onConfigureFailed ( CameraCaptureSession session ) {
-                                                    Toast.makeText ( getContext ( ) , "Configure Failed" , Toast.LENGTH_SHORT ).show ( );
+            @Override
+            public void onConfigureFailed ( CameraCaptureSession session ) {
+                Toast.makeText ( getContext ( ) , "Configure Failed" , Toast.LENGTH_SHORT ).show ( );
 
-                                                }
-                                            } , null );
+            }
+        } , null );
     }
 
     private void updatePreview ( ) throws CameraAccessException {
@@ -185,22 +184,6 @@ public class camera2 extends Fragment {
 
 
         textureView = root.findViewById ( R.id.textureView );
-//        Capture = root.findViewById ( R.id.Capture );
-
-        //        textureView.setSurfaceTextureListener ( );
-
-
-//        Capture.setOnClickListener ( new View.OnClickListener ( ) {
-//            @Override
-//            public void onClick ( View v ) {
-//                try {
-//                    takePicture ( );
-//                }
-//                catch ( CameraAccessException e ) {
-//                    e.printStackTrace ( );
-//                }
-//            }
-//        } );
 
 
         return root;
@@ -235,13 +218,7 @@ public class camera2 extends Fragment {
 
         if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
             if ( getActivity ( ).checkSelfPermission ( Manifest.permission.CAMERA ) != PackageManager.PERMISSION_GRANTED ) {
-                // TODO: Consider calling
-                //    Activity#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for Activity#requestPermissions for more details.
+
                 return;
             }
         }
@@ -344,22 +321,22 @@ public class camera2 extends Fragment {
 
         cameraDevice.createCaptureSession ( outputSurfaces ,
                                             new CameraCaptureSession.StateCallback ( ) {
-                                                @Override
-                                                public void onConfigured ( CameraCaptureSession session ) {
-                                                    try {
-                                                        session.capture ( captureBuilder.build ( ) , captureListener ,
-                                                                          mBackgroundHandler );
-                                                    }
-                                                    catch ( CameraAccessException e ) {
-                                                        e.printStackTrace ( );
-                                                    }
-                                                }
+            @Override
+            public void onConfigured ( CameraCaptureSession session ) {
+                try {
+                    session.capture ( captureBuilder.build ( ) , captureListener ,
+                                      mBackgroundHandler );
+                }
+                catch ( CameraAccessException e ) {
+                    e.printStackTrace ( );
+                }
+            }
 
-                                                @Override
-                                                public void onConfigureFailed ( CameraCaptureSession session ) {
+            @Override
+            public void onConfigureFailed ( CameraCaptureSession session ) {
 
-                                                }
-                                            } , mBackgroundHandler );
+            }
+        } , mBackgroundHandler );
 
     }
 

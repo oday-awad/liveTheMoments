@@ -2,6 +2,7 @@ package net.rebi.livethemoments;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -12,8 +13,8 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 public class view extends AppCompatActivity {
 
-    ConstraintLayout linearLayout;
-    int swapNumber = 1;
+    ConstraintLayout constraintLayout;
+    int              swapNumber = 1;
     private FrameLayout camera1, camera2;
 
     @Override
@@ -25,7 +26,7 @@ public class view extends AppCompatActivity {
 
         camera1 = findViewById ( R.id.camera1 );
         camera2 = findViewById ( R.id.camera2 );
-        linearLayout = findViewById ( R.id.linearLayout );
+        constraintLayout = findViewById ( R.id.constraintLayout);
         ImageButton swap = findViewById ( R.id.swap );
 
 
@@ -42,7 +43,7 @@ public class view extends AppCompatActivity {
 
                         break;
                     case 3:
-//                        view3 ( );
+                        view3 ( );
 
                         break;
                 }
@@ -56,25 +57,25 @@ public class view extends AppCompatActivity {
 
     private void view1 ( ) {
         ConstraintSet constraintSet = new ConstraintSet ( );
-        constraintSet.clone ( linearLayout );
-        constraintSet.connect ( R.id.camera1 , ConstraintSet.TOP , R.id.linearLayout ,
+        constraintSet.clone ( constraintLayout );
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.TOP , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.TOP , 0 );
         constraintSet.connect ( R.id.camera1 , ConstraintSet.BOTTOM , R.id.camera2 ,
                                 ConstraintSet.TOP , 0 );
-        constraintSet.connect ( R.id.camera1 , ConstraintSet.START , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.START , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.START , 0 );
-        constraintSet.connect ( R.id.camera1 , ConstraintSet.END , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.END , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.END , 0 );
 
         constraintSet.connect ( R.id.camera2 , ConstraintSet.TOP , R.id.camera1 ,
                                 ConstraintSet.BOTTOM , 0 );
-        constraintSet.connect ( R.id.camera2 , ConstraintSet.BOTTOM , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.BOTTOM , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.BOTTOM , 0 );
-        constraintSet.connect ( R.id.camera2 , ConstraintSet.START , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.START , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.START , 0 );
-        constraintSet.connect ( R.id.camera2 , ConstraintSet.END , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.END , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.END , 0 );
-        constraintSet.applyTo ( linearLayout );
+        constraintSet.applyTo ( constraintLayout );
 
         swapNumber = 2;
     }
@@ -82,55 +83,63 @@ public class view extends AppCompatActivity {
 
     private void view2 ( ) {
         ConstraintSet constraintSet = new ConstraintSet ( );
-        constraintSet.clone ( linearLayout );
+        constraintSet.clone ( constraintLayout );
         constraintSet.connect ( R.id.camera1 , ConstraintSet.TOP , R.id.camera2 ,
                                 ConstraintSet.BOTTOM , 0 );
-        constraintSet.connect ( R.id.camera1 , ConstraintSet.BOTTOM , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.BOTTOM , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.BOTTOM , 0 );
 
-        constraintSet.connect ( R.id.camera1 , ConstraintSet.START , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.START , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.START , 0 );
-        constraintSet.connect ( R.id.camera1 , ConstraintSet.END , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.END , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.END , 0 );
 
-        constraintSet.connect ( R.id.camera2 , ConstraintSet.TOP , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.TOP , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.TOP , 0 );
 
         constraintSet.connect ( R.id.camera2 , ConstraintSet.BOTTOM , R.id.camera2 ,
                                 ConstraintSet.TOP , 0 );
 
-        constraintSet.connect ( R.id.camera2 , ConstraintSet.START , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.START , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.START , 0 );
-        constraintSet.connect ( R.id.camera2 , ConstraintSet.END , R.id.linearLayout ,
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.END , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.END , 0 );
-        constraintSet.applyTo ( linearLayout );
+        constraintSet.applyTo ( constraintLayout );
+
+        swapNumber = 3;
+    }
+
+    private void view3 ( ) {
+        ConstraintSet constraintSet = new ConstraintSet ( );
+        constraintSet.clone ( constraintLayout );
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.TOP , ConstraintSet.PARENT_ID,
+                                ConstraintSet.TOP , 0 );
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.BOTTOM , ConstraintSet.PARENT_ID,
+                                ConstraintSet.BOTTOM , 0 );
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.START , ConstraintSet.PARENT_ID ,
+                                ConstraintSet.START , 0 );
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.END , ConstraintSet.PARENT_ID,
+                                ConstraintSet.END , 0 );
+
+        ViewGroup.LayoutParams params = camera2.getLayoutParams();
+        params.height = 100;
+        params.width = 100;
+        camera2.setLayoutParams(params);
+
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.TOP , ConstraintSet.PARENT_ID,
+                                ConstraintSet.TOP , 0 );
+        
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.START , ConstraintSet.PARENT_ID ,
+                                ConstraintSet.START , 0 );
+
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.BOTTOM , ConstraintSet.PARENT_ID,
+                                ConstraintSet.BOTTOM , 0 );
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.END , ConstraintSet.PARENT_ID,
+                                ConstraintSet.END , 0 );
+        
+        constraintSet.applyTo ( constraintLayout );
 
         swapNumber = 1;
     }
-
-//    private void view3 ( ) {
-//        ConstraintSet constraintSet = new ConstraintSet ( );
-//        constraintSet.clone ( linearLayout );
-//        constraintSet.connect ( R.id.camera1 , ConstraintSet.TOP , R.id.linearLayout ,
-//                                ConstraintSet.TOP , 0 );
-//        constraintSet.connect ( R.id.camera1 , ConstraintSet.BOTTOM , R.id.camera2 ,
-//                                ConstraintSet.TOP , 0 );
-//        constraintSet.connect ( R.id.camera1 , ConstraintSet.START , R.id.linearLayout ,
-//                                ConstraintSet.START , 0 );
-//        constraintSet.connect ( R.id.camera1 , ConstraintSet.END , R.id.linearLayout ,
-//                                ConstraintSet.END , 0 );
-//
-//        constraintSet.connect ( R.id.camera2 , ConstraintSet.TOP , R.id.camera1 ,
-//                                ConstraintSet.BOTTOM , 0 );
-//        constraintSet.connect ( R.id.camera2 , ConstraintSet.BOTTOM , R.id.linearLayout ,
-//                                ConstraintSet.BOTTOM , 0 );
-//        constraintSet.connect ( R.id.camera2 , ConstraintSet.START , R.id.linearLayout ,
-//                                ConstraintSet.START , 0 );
-//        constraintSet.connect ( R.id.camera2 , ConstraintSet.END , R.id.linearLayout ,
-//                                ConstraintSet.END , 0 );
-//        constraintSet.applyTo ( linearLayout );
-//
-//        swapNumber = 1;
-//    }
 
 }

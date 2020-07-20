@@ -26,7 +26,7 @@ public class view extends AppCompatActivity {
 
         camera1 = findViewById ( R.id.camera1 );
         camera2 = findViewById ( R.id.camera2 );
-        constraintLayout = findViewById ( R.id.constraintLayout);
+        constraintLayout = findViewById ( R.id.constraintLayout );
         ImageButton swap = findViewById ( R.id.swap );
 
 
@@ -112,31 +112,31 @@ public class view extends AppCompatActivity {
     private void view3 ( ) {
         ConstraintSet constraintSet = new ConstraintSet ( );
         constraintSet.clone ( constraintLayout );
-        constraintSet.connect ( R.id.camera1 , ConstraintSet.TOP , ConstraintSet.PARENT_ID,
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.TOP , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.TOP , 0 );
-        constraintSet.connect ( R.id.camera1 , ConstraintSet.BOTTOM , ConstraintSet.PARENT_ID,
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.BOTTOM , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.BOTTOM , 0 );
         constraintSet.connect ( R.id.camera1 , ConstraintSet.START , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.START , 0 );
-        constraintSet.connect ( R.id.camera1 , ConstraintSet.END , ConstraintSet.PARENT_ID,
+        constraintSet.connect ( R.id.camera1 , ConstraintSet.END , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.END , 0 );
 
-        ViewGroup.LayoutParams params = camera2.getLayoutParams();
+        ViewGroup.LayoutParams params = camera2.getLayoutParams ( );
         params.height = 100;
         params.width = 100;
-        camera2.setLayoutParams(params);
+        camera2.setLayoutParams ( params );
 
-        constraintSet.connect ( R.id.camera2 , ConstraintSet.TOP , ConstraintSet.PARENT_ID,
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.TOP , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.TOP , 0 );
-        
+
         constraintSet.connect ( R.id.camera2 , ConstraintSet.START , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.START , 0 );
 
-        constraintSet.connect ( R.id.camera2 , ConstraintSet.BOTTOM , ConstraintSet.PARENT_ID,
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.BOTTOM , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.BOTTOM , 0 );
-        constraintSet.connect ( R.id.camera2 , ConstraintSet.END , ConstraintSet.PARENT_ID,
+        constraintSet.connect ( R.id.camera2 , ConstraintSet.END , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.END , 0 );
-        
+
         constraintSet.applyTo ( constraintLayout );
 
         swapNumber = 1;

@@ -13,24 +13,25 @@ import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button openCamera;
+    Button   openView;
 
     @Override
     protected void onCreate ( Bundle savedInstanceState ) {
         super.onCreate ( savedInstanceState );
         setContentView ( R.layout.activity_main );
 
-        openCamera = findViewById ( R.id.openCamera );
+        openView = findViewById ( R.id.openView );
 
         checkPermissions ();
 
 
 
 
-        openCamera.setOnClickListener ( new View.OnClickListener ( ) {
+
+        openView.setOnClickListener ( new View.OnClickListener ( ) {
             @Override
             public void onClick ( View v ) {
-                Intent intent = new Intent ( getBaseContext ( ) , camera.class );
+                Intent intent = new Intent ( getBaseContext ( ) , view.class );
 
                 startActivity ( intent );
             }

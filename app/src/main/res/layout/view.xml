@@ -8,28 +8,43 @@
     android:orientation="vertical"
     tools:context=".view">
 
-    <fragment
+    <FrameLayout
         android:id="@+id/camera1"
-        android:name="net.rebi.livethemoments.camera1"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="#CC1616"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/camera2" />
+        app:layout_constraintTop_toBottomOf="@id/camera2" >
 
-    <fragment
+        <fragment
+            android:id="@+id/fragment"
+            android:name="net.rebi.livethemoments.camera1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+
+    <FrameLayout
         android:id="@+id/camera2"
-        android:name="net.rebi.livethemoments.camera2"
         android:layout_width="0dp"
         android:layout_height="300dp"
-
+        android:background="#29B6F6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <fragment
+            android:id="@+id/fragment2"
+            android:name="net.rebi.livethemoments.camera2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -42,7 +57,7 @@
         <ImageButton
             android:id="@+id/imageButton3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
             app:srcCompat="@android:drawable/ic_menu_camera" />
@@ -50,7 +65,7 @@
         <ImageButton
             android:id="@+id/imageButton4"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
             app:srcCompat="@android:drawable/ic_menu_camera" />
@@ -58,18 +73,18 @@
         <ImageButton
             android:id="@+id/imageButton2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
             app:srcCompat="@android:drawable/ic_menu_camera" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/swap"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+            app:srcCompat="@drawable/ic_swap" />
     </LinearLayout>
 
 

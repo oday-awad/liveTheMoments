@@ -54,7 +54,6 @@ public class camera2 extends Fragment {
         ORIENTATIONS.append ( Surface.ROTATION_270 , 180 );
     }
 
-    //    Button                 Capture;
     TextureView            textureView;
     CameraDevice           cameraDevice;
     CameraCaptureSession   cameraCaptureSession;
@@ -62,71 +61,128 @@ public class camera2 extends Fragment {
     CaptureRequest.Builder captureRequestBuilder;
     Handler                mBackgroundHandler;
     HandlerThread          mBackgroundThread;
-    private       String                     cameraId;
-    private       Size                       imageDimensions;
-    private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback ( ) {
-        @Override
-        public void onOpened ( CameraDevice camera ) {
+    private String cameraId;
+    private Size   imageDimensions;
+    private ImageReader                imageReader;
+    private File                       file;
+    private int                        cameraIndex   = 1;
+    private int                        outputSize    = 0;
+    TextureView.SurfaceTextureListener surfaceTextureListener;
+    CameraDevice.StateCallback stateCallback;
 
-            cameraDevice = camera;
+
+    public camera2 ( ) {
+        // Required empty public constructor
+    }
+
+
+    @Override
+    public View onCreateView (
+            LayoutInflater inflater , ViewGroup container , Bundle savedInstanceState
+    ) {
+        // Inflate the layout for this fragment
+        View root = inflater.inflate ( R.layout.camera2 , container , false );
+
+
+        textureView = root.findViewById ( R.id.textureView );
+
+         stateCallback = new CameraDevice.StateCallback ( ) {
+            @Override
+            public void onOpened ( CameraDevice camera ) {
+
+                System.err.println ("onOpened" );
+                cameraDevice = camera;
+                try {
+                    createCameraPreview ( );
+                }
+                catch ( CameraAccessException e ) {
+                    e.printStackTrace ( );
+                }
+            }
+
+            @Override
+            public void onDisconnected ( CameraDevice camera ) {
+                System.err.println ("onDisconnected" );
+
+                cameraDevice.close ( );
+            }
+
+            @Override
+            public void onError ( CameraDevice camera , int error ) {
+                System.err.println ("onError" );
+                cameraDevice.close ( );
+                cameraDevice = null;
+            }
+        };
+
+        surfaceTextureListener =
+                new TextureView.SurfaceTextureListener ( ) {
+                    @Override
+                    public void onSurfaceTextureAvailable (
+                            SurfaceTexture surface , int width , int height
+                    ) {
+                        try {
+                            openCamera ( );
+                        }
+                        catch ( CameraAccessException e ) {
+                            e.printStackTrace ( );
+                        }
+                    }
+
+                    @Override
+                    public void onSurfaceTextureSizeChanged (
+                            SurfaceTexture surface , int width , int height
+                    ) {
+
+                    }
+
+                    @Override
+                    public boolean onSurfaceTextureDestroyed ( SurfaceTexture surface ) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSurfaceTextureUpdated ( SurfaceTexture surface ) {
+
+                    }
+                };
+
+
+        return root;
+    }
+
+    @Override
+    public void onResume ( ) {
+        super.onResume ( );
+
+        startBackgroundThread ( );
+        if ( textureView.isAvailable ( ) ) {
             try {
-                createCameraPreview ( );
+                openCamera ( );
             }
             catch ( CameraAccessException e ) {
                 e.printStackTrace ( );
             }
         }
-
-        @Override
-        public void onDisconnected ( CameraDevice camera ) {
-            cameraDevice.close ( );
+        else {
+            textureView.setSurfaceTextureListener ( surfaceTextureListener );
         }
 
-        @Override
-        public void onError ( CameraDevice camera , int error ) {
-            cameraDevice.close ( );
-            cameraDevice = null;
-        }
-    };
-    private       ImageReader                imageReader;
-    private       File                       file;
-    private       int                        cameraIndex   = 1;
-    private       int                        outputSize    = 0;
-    TextureView.SurfaceTextureListener surfaceTextureListener =
-            new TextureView.SurfaceTextureListener ( ) {
-                @Override
-                public void onSurfaceTextureAvailable (
-                        SurfaceTexture surface , int width , int height
-                ) {
-                    try {
-                        openCamera ( );
-                    }
-                    catch ( CameraAccessException e ) {
-                        e.printStackTrace ( );
-                    }
-                }
-
-                @Override
-                public void onSurfaceTextureSizeChanged (
-                        SurfaceTexture surface , int width , int height
-                ) {
-
-                }
-
-                @Override
-                public boolean onSurfaceTextureDestroyed ( SurfaceTexture surface ) {
-                    return false;
-                }
-
-                @Override
-                public void onSurfaceTextureUpdated ( SurfaceTexture surface ) {
-
-                }
-            };
-
-    public camera2 ( ) {
-        // Required empty public constructor
     }
+
+    @Override
+    public void onPause ( ) {
+        try {
+            stopBackgroundThread ( );
+        }
+        catch ( InterruptedException e ) {
+            e.printStackTrace ( );
+        }
+
+        super.onPause ( );
+
+    }
+
 
     private void createCameraPreview ( ) throws CameraAccessException {
         SurfaceTexture texture = textureView.getSurfaceTexture ( );
@@ -175,20 +231,6 @@ public class camera2 extends Fragment {
         }
     }
 
-    @Override
-    public View onCreateView (
-            LayoutInflater inflater , ViewGroup container , Bundle savedInstanceState
-    ) {
-        // Inflate the layout for this fragment
-        View root = inflater.inflate ( R.layout.camera2 , container , false );
-
-
-        textureView = root.findViewById ( R.id.textureView );
-
-
-        return root;
-    }
-
     private void openCamera ( ) throws CameraAccessException {
         CameraManager cameraManager =
                 ( CameraManager ) getActivity ( ).getSystemService ( Context.CAMERA_SERVICE );
@@ -206,6 +248,8 @@ public class camera2 extends Fragment {
                 cameraCharacteristics.get ( CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP );
 
         Size[] d = streamConfigurationMap.getOutputSizes ( SurfaceTexture.class );
+
+        System.err.println ( " \n\n\n\n\n ****************************************************" + d.length + " \n\n\n\n\n ****************************************************" );
 
         for ( int i = 0 ; i < d.length ; i++ ) {
             System.err.println ( d[ i ] );
@@ -366,37 +410,7 @@ public class camera2 extends Fragment {
         mBackgroundHandler = null;
     }
 
-    @Override
-    public void onResume ( ) {
-        super.onResume ( );
 
-        startBackgroundThread ( );
-        if ( textureView.isAvailable ( ) ) {
-            try {
-                openCamera ( );
-            }
-            catch ( CameraAccessException e ) {
-                e.printStackTrace ( );
-            }
-        }
-        else {
-            textureView.setSurfaceTextureListener ( surfaceTextureListener );
-        }
-
-    }
-
-    @Override
-    public void onPause ( ) {
-        try {
-            stopBackgroundThread ( );
-        }
-        catch ( InterruptedException e ) {
-            e.printStackTrace ( );
-        }
-
-        super.onPause ( );
-
-    }
 
 
 }

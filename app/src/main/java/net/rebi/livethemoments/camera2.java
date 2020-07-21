@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import java.io.File;
@@ -260,12 +261,6 @@ public class camera2 extends Fragment {
         imageDimensions =
                 streamConfigurationMap.getOutputSizes ( SurfaceTexture.class )[ outputSize ];
 
-        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
-            if ( getActivity ( ).checkSelfPermission ( Manifest.permission.CAMERA ) != PackageManager.PERMISSION_GRANTED ) {
-
-                return;
-            }
-        }
         cameraManager.openCamera ( cameraId , stateCallback , null );
 
     }

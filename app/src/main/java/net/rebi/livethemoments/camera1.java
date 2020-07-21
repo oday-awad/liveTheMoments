@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import java.io.File;
@@ -214,14 +215,15 @@ public class camera1 extends Fragment {
                 streamConfigurationMap.getOutputSizes ( SurfaceTexture.class )[ outputSize ];
 
         if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
-            if ( getActivity ( ).checkSelfPermission ( Manifest.permission.CAMERA ) != PackageManager.PERMISSION_GRANTED ) {
-                // TODO: Consider calling
-                //    Activity#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for Activity#requestPermissions for more details.
+            if (  ActivityCompat.checkSelfPermission ( getActivity() , Manifest.permission.CAMERA ) != PackageManager.PERMISSION_GRANTED
+                  || ActivityCompat.checkSelfPermission ( getActivity() ,
+                                                         Manifest.permission.WRITE_EXTERNAL_STORAGE ) != PackageManager.PERMISSION_GRANTED
+                  || ActivityCompat.checkSelfPermission ( getActivity() ,
+                                                         Manifest.permission.RECORD_AUDIO ) != PackageManager.PERMISSION_GRANTED
+                  || ActivityCompat.checkSelfPermission ( getActivity() ,
+                                                         Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+
+                checkPermissions ();
                 return;
             }
         }
@@ -401,6 +403,14 @@ public class camera1 extends Fragment {
 
     }
 
+    public void checkPermissions(){
+            ActivityCompat.requestPermissions ( getActivity() ,
+                                                new String[] {
+                                                        Manifest.permission.CAMERA
+                                                        , Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                                        , Manifest.permission.RECORD_AUDIO
+                                                        , Manifest.permission.ACCESS_FINE_LOCATION } , 1 );
 
+    }
 }
 

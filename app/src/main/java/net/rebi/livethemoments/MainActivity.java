@@ -10,7 +10,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import net.rebi.livethemoments.activity.CaptureActivity;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,9 +44,7 @@ public class MainActivity extends AppCompatActivity {
         openView2.setOnClickListener ( new View.OnClickListener ( ) {
             @Override
             public void onClick ( View v ) {
-                Intent intent = new Intent ( getBaseContext ( ) , CaptureActivity.class );
 
-                startActivity ( intent );
             }
         } );
     }

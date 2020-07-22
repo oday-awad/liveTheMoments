@@ -1,5 +1,6 @@
 package net.rebi.livethemoments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+
+import net.rebi.livethemoments.Fragments.camera;
 
 public class view extends AppCompatActivity {
 
@@ -28,12 +31,14 @@ public class view extends AppCompatActivity {
         camera1 = findViewById ( R.id.camera1 );
         camera2 = findViewById ( R.id.camera2 );
 
-        getSupportFragmentManager ().beginTransaction ().add ( R.id.camera1 ,new camera ( 1) ).commit ();
-        getSupportFragmentManager ().beginTransaction ().add ( R.id.camera2 ,new camera ( 0) ).commit ();
-
+        //        getSupportFragmentManager ().beginTransaction ().add ( R.id.camera1 ,new camera
+        //        ( 1) ).commit ();
+        //        getSupportFragmentManager ().beginTransaction ().add ( R.id.camera2 ,new camera
+        //        ( 0) ).commit ();
+        new myAsync1 ( ).execute ( );
 
         constraintLayout = findViewById ( R.id.constraintLayout );
-        ImageButton swap       = findViewById ( R.id.swap );
+        ImageButton swap = findViewById ( R.id.swap );
 
 
         swap.setOnClickListener ( new View.OnClickListener ( ) {
@@ -129,7 +134,7 @@ public class view extends AppCompatActivity {
         constraintSet.connect ( R.id.camera1 , ConstraintSet.END , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.END , 0 );
 
-//        constraintSet.clear ( R.id.camera2 );
+        //        constraintSet.clear ( R.id.camera2 );
 
         ViewGroup.LayoutParams params = camera2.getLayoutParams ( );
         params.height = 100;
@@ -153,4 +158,44 @@ public class view extends AppCompatActivity {
 
     }
 
+    class myAsync1 extends AsyncTask < String, Integer, Void > {
+        @Override
+        protected Void doInBackground ( String... strings ) {
+            getSupportFragmentManager ( ).beginTransaction ( ).add ( R.id.camera1 ,
+                                                                     new camera ( 1 ) ).commit ( );
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute ( ) {
+            super.onPreExecute ( );
+        }
+
+        @Override
+        protected void onPostExecute ( Void aVoid ) {
+            new myAsync2 ( ).execute ( );
+            super.onPostExecute ( aVoid );
+        }
+    }
+
+    class myAsync2 extends AsyncTask < String, Integer, Void > {
+        @Override
+        protected Void doInBackground ( String... strings ) {
+            getSupportFragmentManager ( ).beginTransaction ( ).add ( R.id.camera2 ,
+                                                                     new camera ( 0 ) ).commit ( );
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute ( ) {
+            super.onPreExecute ( );
+        }
+
+        @Override
+        protected void onPostExecute ( Void aVoid ) {
+            super.onPostExecute ( aVoid );
+        }
+    }
 }
+
+

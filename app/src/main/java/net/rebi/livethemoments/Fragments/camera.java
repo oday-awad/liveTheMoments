@@ -1,4 +1,4 @@
-package net.rebi.livethemoments;
+package net.rebi.livethemoments.Fragments;
 
 import android.Manifest;
 import android.content.Context;
@@ -33,6 +33,8 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import net.rebi.livethemoments.R;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,13 +58,13 @@ public class camera extends Fragment {
     }
 
     //    Button                 Capture;
-    TextureView            textureView;
-    CameraDevice           cameraDevice;
-    CameraCaptureSession   cameraCaptureSession;
-    CaptureRequest         captureRequest;
-    CaptureRequest.Builder captureRequestBuilder;
-    Handler                mBackgroundHandler;
-    HandlerThread          mBackgroundThread;
+    TextureView                        textureView;
+    CameraDevice                       cameraDevice;
+    CameraCaptureSession               cameraCaptureSession;
+    CaptureRequest                     captureRequest;
+    CaptureRequest.Builder             captureRequestBuilder;
+    Handler                            mBackgroundHandler;
+    HandlerThread                      mBackgroundThread;
     TextureView.SurfaceTextureListener surfaceTextureListener;
     private String                     cameraId;
     private Size                       imageDimensions;
@@ -212,7 +214,6 @@ public class camera extends Fragment {
 
         String[] s = cameraManager.getCameraIdList ( );
 
-        System.err.println ( " \n\n\n\n\n ****************************************************" + s.length + " \n\n\n\n\n ****************************************************" );
 
         cameraId = cameraManager.getCameraIdList ( )[ cameraIndex ];
 
@@ -224,10 +225,12 @@ public class camera extends Fragment {
 
         Size[] d = streamConfigurationMap.getOutputSizes ( SurfaceTexture.class );
 
-        for ( int i = 0 ; i < d.length ; i++ ) {
-            System.err.println ( d[ i ] );
-            System.err.println ( "**************************" );
-        }
+        System.err.println ( " \n\n\n\n\n ****************************************************" + s.length + " \n\n\n\n\n ****************************************************" );
+        System.err.println ( " \n\n\n\n\n ****************************************************" + d.length + " \n\n\n\n\n ****************************************************" );
+//        for ( int i = 0 ; i < d.length ; i++ ) {
+//            System.err.println ( d[ i ] );
+//            System.err.println ( "**************************" );
+//        }
 
 
         imageDimensions =

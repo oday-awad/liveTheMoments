@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">عيش اللحظة</string>
-
-
+    <string name="todo">TODO</string>
 </resources>

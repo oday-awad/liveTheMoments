@@ -248,130 +248,6 @@ public class camera extends Fragment {
 
     }
 
-    private void takePicture ( ) throws CameraAccessException {
-
-        if ( cameraDevice == null ) {
-            return;
-        }
-        CameraManager manager =
-                ( CameraManager ) getActivity ( ).getSystemService ( Context.CAMERA_SERVICE );
-
-        CameraCharacteristics characteristics =
-                manager.getCameraCharacteristics ( cameraDevice.getId ( ) );
-
-        Size[] jpegSizes = null;
-
-        jpegSizes =
-                characteristics.get ( CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP ).getOutputSizes ( ImageFormat.JPEG );
-
-        int width  = 640;
-        int height = 480;
-
-        if ( jpegSizes != null && jpegSizes.length > 0 ) {
-            width = jpegSizes[ 0 ].getWidth ( );
-            height = jpegSizes[ 0 ].getHeight ( );
-        }
-
-        Size        largest;
-        ImageReader reader = ImageReader.newInstance ( width , height , ImageFormat.JPEG , 1 );
-
-        List < Surface > outputSurfaces = new ArrayList <> ( 2 );
-        outputSurfaces.add ( reader.getSurface ( ) );
-        outputSurfaces.add ( new Surface ( textureView.getSurfaceTexture ( ) ) );
-
-        final CaptureRequest.Builder captureBuilder =
-                cameraDevice.createCaptureRequest ( CameraDevice.TEMPLATE_STILL_CAPTURE );
-
-        captureBuilder.addTarget ( reader.getSurface ( ) );
-        captureBuilder.set ( CaptureRequest.CONTROL_MODE , CameraMetadata.CONTROL_MODE_AUTO );
-
-        int rotation = getActivity ( ).getWindowManager ( ).getDefaultDisplay ( ).getRotation ( );
-        captureBuilder.set ( CaptureRequest.JPEG_ORIENTATION , ORIENTATIONS.get ( rotation ) );
-
-        Long   tsLong = System.currentTimeMillis ( ) / 1000;
-        String ts     = tsLong.toString ( );
-
-        file = new File ( Environment.getExternalStorageDirectory ( ) + "/" + ts + ".jpg" );
-
-
-        ImageReader.OnImageAvailableListener readerListener =
-                new ImageReader.OnImageAvailableListener ( ) {
-                    @Override
-                    public void onImageAvailable ( ImageReader reader ) {
-                        Image image = null;
-
-                        image = reader.acquireLatestImage ( );
-                        ByteBuffer buffer = image.getPlanes ( )[ 0 ].getBuffer ( );
-
-                        byte[] bytes = new byte[ buffer.capacity ( ) ];
-                        buffer.get ( bytes );
-                        try {
-                            save ( bytes );
-                        }
-                        catch ( IOException e ) {
-                            e.printStackTrace ( );
-                        } finally {
-                            if ( image != null ) {
-                                image.close ( );
-                            }
-                        }
-
-
-                    }
-                };
-
-        reader.setOnImageAvailableListener ( readerListener , mBackgroundHandler );
-
-        final CameraCaptureSession.CaptureCallback captureListener =
-                new CameraCaptureSession.CaptureCallback ( ) {
-                    @Override
-                    public void onCaptureCompleted (
-                            CameraCaptureSession session , CaptureRequest request ,
-                            TotalCaptureResult result
-                    ) {
-                        super.onCaptureCompleted ( session , request , result );
-                        Toast.makeText ( getActivity ( ) , "Saved" , Toast.LENGTH_SHORT ).show ( );
-                        try {
-                            createCameraPreview ( );
-                        }
-                        catch ( CameraAccessException e ) {
-                            e.printStackTrace ( );
-                        }
-                    }
-                };
-
-
-        cameraDevice.createCaptureSession ( outputSurfaces ,
-                                            new CameraCaptureSession.StateCallback ( ) {
-            @Override
-            public void onConfigured ( CameraCaptureSession session ) {
-                try {
-                    session.capture ( captureBuilder.build ( ) , captureListener ,
-                                      mBackgroundHandler );
-                }
-                catch ( CameraAccessException e ) {
-                    e.printStackTrace ( );
-                }
-            }
-
-            @Override
-            public void onConfigureFailed ( CameraCaptureSession session ) {
-
-            }
-        } , mBackgroundHandler );
-
-    }
-
-    private void save ( byte[] bytes ) throws IOException {
-        OutputStream outputStream = null;
-
-        outputStream = new FileOutputStream ( file );
-
-        outputStream.write ( bytes );
-
-        outputStream.close ( );
-    }
-
     private void createCameraPreview ( ) throws CameraAccessException {
         SurfaceTexture texture = textureView.getSurfaceTexture ( );
         texture.setDefaultBufferSize ( imageDimensions.getWidth ( ) ,
@@ -437,5 +313,129 @@ public class camera extends Fragment {
                                             1 );
 
     }
+
+    //    private void takePicture ( ) throws CameraAccessException {
+    //
+    //        if ( cameraDevice == null ) {
+    //            return;
+    //        }
+    //        CameraManager manager =
+    //                ( CameraManager ) getActivity ( ).getSystemService ( Context.CAMERA_SERVICE );
+    //
+    //        CameraCharacteristics characteristics =
+    //                manager.getCameraCharacteristics ( cameraDevice.getId ( ) );
+    //
+    //        Size[] jpegSizes = null;
+    //
+    //        jpegSizes =
+    //                characteristics.get ( CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP ).getOutputSizes ( ImageFormat.JPEG );
+    //
+    //        int width  = 640;
+    //        int height = 480;
+    //
+    //        if ( jpegSizes != null && jpegSizes.length > 0 ) {
+    //            width = jpegSizes[ 0 ].getWidth ( );
+    //            height = jpegSizes[ 0 ].getHeight ( );
+    //        }
+    //
+    //        Size        largest;
+    //        ImageReader reader = ImageReader.newInstance ( width , height , ImageFormat.JPEG , 1 );
+    //
+    //        List < Surface > outputSurfaces = new ArrayList <> ( 2 );
+    //        outputSurfaces.add ( reader.getSurface ( ) );
+    //        outputSurfaces.add ( new Surface ( textureView.getSurfaceTexture ( ) ) );
+    //
+    //        final CaptureRequest.Builder captureBuilder =
+    //                cameraDevice.createCaptureRequest ( CameraDevice.TEMPLATE_STILL_CAPTURE );
+    //
+    //        captureBuilder.addTarget ( reader.getSurface ( ) );
+    //        captureBuilder.set ( CaptureRequest.CONTROL_MODE , CameraMetadata.CONTROL_MODE_AUTO );
+    //
+    //        int rotation = getActivity ( ).getWindowManager ( ).getDefaultDisplay ( ).getRotation ( );
+    //        captureBuilder.set ( CaptureRequest.JPEG_ORIENTATION , ORIENTATIONS.get ( rotation ) );
+    //
+    //        Long   tsLong = System.currentTimeMillis ( ) / 1000;
+    //        String ts     = tsLong.toString ( );
+    //
+    //        file = new File ( Environment.getExternalStorageDirectory ( ) + "/" + ts + ".jpg" );
+    //
+    //
+    //        ImageReader.OnImageAvailableListener readerListener =
+    //                new ImageReader.OnImageAvailableListener ( ) {
+    //                    @Override
+    //                    public void onImageAvailable ( ImageReader reader ) {
+    //                        Image image = null;
+    //
+    //                        image = reader.acquireLatestImage ( );
+    //                        ByteBuffer buffer = image.getPlanes ( )[ 0 ].getBuffer ( );
+    //
+    //                        byte[] bytes = new byte[ buffer.capacity ( ) ];
+    //                        buffer.get ( bytes );
+    //                        try {
+    //                            save ( bytes );
+    //                        }
+    //                        catch ( IOException e ) {
+    //                            e.printStackTrace ( );
+    //                        } finally {
+    //                            if ( image != null ) {
+    //                                image.close ( );
+    //                            }
+    //                        }
+    //
+    //
+    //                    }
+    //                };
+    //
+    //        reader.setOnImageAvailableListener ( readerListener , mBackgroundHandler );
+    //
+    //        final CameraCaptureSession.CaptureCallback captureListener =
+    //                new CameraCaptureSession.CaptureCallback ( ) {
+    //                    @Override
+    //                    public void onCaptureCompleted (
+    //                            CameraCaptureSession session , CaptureRequest request ,
+    //                            TotalCaptureResult result
+    //                    ) {
+    //                        super.onCaptureCompleted ( session , request , result );
+    //                        Toast.makeText ( getActivity ( ) , "Saved" , Toast.LENGTH_SHORT ).show ( );
+    //                        try {
+    //                            createCameraPreview ( );
+    //                        }
+    //                        catch ( CameraAccessException e ) {
+    //                            e.printStackTrace ( );
+    //                        }
+    //                    }
+    //                };
+    //
+    //
+    //        cameraDevice.createCaptureSession ( outputSurfaces ,
+    //                                            new CameraCaptureSession.StateCallback ( ) {
+    //            @Override
+    //            public void onConfigured ( CameraCaptureSession session ) {
+    //                try {
+    //                    session.capture ( captureBuilder.build ( ) , captureListener ,
+    //                                      mBackgroundHandler );
+    //                }
+    //                catch ( CameraAccessException e ) {
+    //                    e.printStackTrace ( );
+    //                }
+    //            }
+    //
+    //            @Override
+    //            public void onConfigureFailed ( CameraCaptureSession session ) {
+    //
+    //            }
+    //        } , mBackgroundHandler );
+    //
+    //    }
+    //
+    //    private void save ( byte[] bytes ) throws IOException {
+    //        OutputStream outputStream = null;
+    //
+    //        outputStream = new FileOutputStream ( file );
+    //
+    //        outputStream.write ( bytes );
+    //
+    //        outputStream.close ( );
+    //    }
 }
 

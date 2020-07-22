@@ -162,7 +162,7 @@ public class view extends AppCompatActivity {
         @Override
         protected Void doInBackground ( String... strings ) {
             getSupportFragmentManager ( ).beginTransaction ( ).add ( R.id.camera1 ,
-                                                                     new camera ( 1 ) ).commit ( );
+                                                                     new camera ( 0 ) ).commit ( );
             return null;
         }
 
@@ -173,8 +173,8 @@ public class view extends AppCompatActivity {
 
         @Override
         protected void onPostExecute ( Void aVoid ) {
-            new myAsync2 ( ).execute ( );
             super.onPostExecute ( aVoid );
+            new myAsync2 ( ).execute ( );
         }
     }
 
@@ -182,7 +182,7 @@ public class view extends AppCompatActivity {
         @Override
         protected Void doInBackground ( String... strings ) {
             getSupportFragmentManager ( ).beginTransaction ( ).add ( R.id.camera2 ,
-                                                                     new camera ( 0 ) ).commit ( );
+                                                                     new camera ( 1 ) ).commit ( );
             return null;
         }
 

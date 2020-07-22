@@ -18,11 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/camera2" >
 
-        <!--<fragment-->
-            <!--android:id="@+id/fragment"-->
-            <!--android:name="net.rebi.livethemoments.Fragments.camera-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
     </FrameLayout>
 
 
@@ -36,11 +31,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
 
-        <!--<fragment-->
-            <!--android:id="@+id/fragment2"-->
-            <!--android:name="net.rebi.livethemoments.camera2"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
     </FrameLayout>
 
     <LinearLayout
@@ -60,7 +50,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+            app:srcCompat="@android:drawable/ic_menu_camera"
+            android:contentDescription="@string/todo" />
 
         <ImageButton
             android:id="@+id/imageButton2"
@@ -68,7 +59,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+            app:srcCompat="@android:drawable/ic_menu_camera"
+            android:contentDescription="@string/todo" />
 
         <ImageButton
             android:id="@+id/imageButton3"
@@ -76,7 +68,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+            app:srcCompat="@android:drawable/ic_menu_camera"
+            android:contentDescription="@string/todo" />
 
         <ImageButton
             android:id="@+id/swap"
@@ -84,7 +77,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
-            app:srcCompat="@drawable/ic_swap" />
+            app:srcCompat="@drawable/ic_swap"
+            android:contentDescription="@string/todo" />
     </LinearLayout>
 
 

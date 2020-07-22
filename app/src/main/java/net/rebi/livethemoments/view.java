@@ -23,11 +23,17 @@ public class view extends AppCompatActivity {
         setContentView ( R.layout.view );
         getWindow ( ).addFlags ( WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON );
         getWindow ( ).addFlags ( WindowManager.LayoutParams.FLAG_FULLSCREEN );
+        getWindow ( ).addFlags ( WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN );
 
         camera1 = findViewById ( R.id.camera1 );
         camera2 = findViewById ( R.id.camera2 );
+
+        getSupportFragmentManager ().beginTransaction ().add ( R.id.camera1 ,new camera ( 1) ).commit ();
+        getSupportFragmentManager ().beginTransaction ().add ( R.id.camera2 ,new camera ( 0) ).commit ();
+
+
         constraintLayout = findViewById ( R.id.constraintLayout );
-        ImageButton swap = findViewById ( R.id.swap );
+        ImageButton swap       = findViewById ( R.id.swap );
 
 
         swap.setOnClickListener ( new View.OnClickListener ( ) {
@@ -36,14 +42,16 @@ public class view extends AppCompatActivity {
                 switch ( swapNumber ) {
                     case 1:
                         view1 ( );
-
+                        swapNumber = 2;
                         break;
                     case 2:
                         view2 ( );
+                        swapNumber = 1;
 
                         break;
                     case 3:
                         view3 ( );
+                        swapNumber = 1;
 
                         break;
                 }
@@ -77,7 +85,7 @@ public class view extends AppCompatActivity {
                                 ConstraintSet.END , 0 );
         constraintSet.applyTo ( constraintLayout );
 
-        swapNumber = 2;
+
     }
 
 
@@ -106,7 +114,7 @@ public class view extends AppCompatActivity {
                                 ConstraintSet.END , 0 );
         constraintSet.applyTo ( constraintLayout );
 
-        swapNumber = 3;
+
     }
 
     private void view3 ( ) {
@@ -121,10 +129,13 @@ public class view extends AppCompatActivity {
         constraintSet.connect ( R.id.camera1 , ConstraintSet.END , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.END , 0 );
 
+//        constraintSet.clear ( R.id.camera2 );
+
         ViewGroup.LayoutParams params = camera2.getLayoutParams ( );
         params.height = 100;
         params.width = 100;
         camera2.setLayoutParams ( params );
+
 
         constraintSet.connect ( R.id.camera2 , ConstraintSet.TOP , ConstraintSet.PARENT_ID ,
                                 ConstraintSet.TOP , 0 );
@@ -139,7 +150,7 @@ public class view extends AppCompatActivity {
 
         constraintSet.applyTo ( constraintLayout );
 
-        swapNumber = 1;
+
     }
 
 }

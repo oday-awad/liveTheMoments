@@ -9,11 +9,13 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+
+import net.rebi.livethemoments.activity.CaptureActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     Button   openView;
+    Button   openView2;
 
     @Override
     protected void onCreate ( Bundle savedInstanceState ) {
@@ -21,10 +23,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView ( R.layout.activity_main );
 
         openView = findViewById ( R.id.openView );
+        openView2 = findViewById ( R.id.openView2 );
 
         checkPermissions ();
 
+        Intent intent = new Intent ( getBaseContext ( ) , view.class );
 
+        startActivity ( intent );
 
 
 
@@ -32,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick ( View v ) {
                 Intent intent = new Intent ( getBaseContext ( ) , view.class );
+
+                startActivity ( intent );
+            }
+        } );
+        openView2.setOnClickListener ( new View.OnClickListener ( ) {
+            @Override
+            public void onClick ( View v ) {
+                Intent intent = new Intent ( getBaseContext ( ) , CaptureActivity.class );
 
                 startActivity ( intent );
             }

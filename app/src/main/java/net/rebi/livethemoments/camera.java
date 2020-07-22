@@ -28,7 +28,6 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -45,7 +44,7 @@ import java.util.List;
 
 
 @SuppressWarnings ( "ALL" )
-public class camera1 extends Fragment {
+public class camera extends Fragment {
 
     private final static SparseIntArray ORIENTATIONS = new SparseIntArray ( );
 
@@ -56,7 +55,7 @@ public class camera1 extends Fragment {
         ORIENTATIONS.append ( Surface.ROTATION_270 , 180 );
     }
 
-//    Button                 Capture;
+    //    Button                 Capture;
     TextureView            textureView;
     CameraDevice           cameraDevice;
     CameraCaptureSession   cameraCaptureSession;
@@ -64,90 +63,46 @@ public class camera1 extends Fragment {
     CaptureRequest.Builder captureRequestBuilder;
     Handler                mBackgroundHandler;
     HandlerThread          mBackgroundThread;
-    private       String                     cameraId;
-    private       Size                       imageDimensions;
-    private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback ( ) {
-        @Override
-        public void onOpened ( CameraDevice camera ) {
+    TextureView.SurfaceTextureListener surfaceTextureListener;
+    private String                     cameraId;
+    private Size                       imageDimensions;
+    private ImageReader                imageReader;
+    private File                       file;
+    private int                        cameraIndex = 0;
+    private int                        outputSize  = 0;
+    private CameraDevice.StateCallback stateCallback;
 
-            cameraDevice = camera;
-            try {
-                createCameraPreview ( );
-            }
-            catch ( CameraAccessException e ) {
-                e.printStackTrace ( );
-            }
-        }
-
-        @Override
-        public void onDisconnected ( CameraDevice camera ) {
-            cameraDevice.close ( );
-        }
-
-        @Override
-        public void onError ( CameraDevice camera , int error ) {
-            cameraDevice.close ( );
-            cameraDevice = null;
-        }
-    };
-    private       ImageReader                imageReader;
-    private       File                       file;
-    private       int                        cameraIndex   = 0;
-    private       int                        outputSize    = 0;
-    TextureView.SurfaceTextureListener surfaceTextureListener =
-            new TextureView.SurfaceTextureListener ( ) {
-                @Override
-                public void onSurfaceTextureAvailable (
-                        SurfaceTexture surface , int width , int height
-                ) {
-                    try {
-                        openCamera ( );
-                    }
-                    catch ( CameraAccessException e ) {
-                        e.printStackTrace ( );
-                    }
-                }
-
-                @Override
-                public void onSurfaceTextureSizeChanged (
-                        SurfaceTexture surface , int width , int height
-                ) {
-
-                }
-
-                @Override
-                public boolean onSurfaceTextureDestroyed ( SurfaceTexture surface ) {
-                    return false;
-                }
-
-                @Override
-                public void onSurfaceTextureUpdated ( SurfaceTexture surface ) {
-
-                }
-            };
-
-    public camera1 ( ) {
+    public camera ( ) {
         // Required empty public constructor
     }
 
-    private void createCameraPreview ( ) throws CameraAccessException {
-        SurfaceTexture texture = textureView.getSurfaceTexture ( );
-        texture.setDefaultBufferSize ( imageDimensions.getWidth ( ) ,
-                                       imageDimensions.getHeight ( ) );
-        Surface surface = new Surface ( texture );
-        captureRequestBuilder = cameraDevice.createCaptureRequest ( CameraDevice.TEMPLATE_PREVIEW );
-        captureRequestBuilder.addTarget ( surface );
+    public camera ( int cameraIndex ) {
+        this.cameraIndex = cameraIndex;
+    }
 
-        cameraDevice.createCaptureSession ( Arrays.asList ( surface ) ,
-                                            new CameraCaptureSession.StateCallback ( ) {
+
+    @Override
+    public View onCreateView (
+            LayoutInflater inflater , ViewGroup container , Bundle savedInstanceState
+    ) {
+        // Inflate the layout for this fragment
+        View root = inflater.inflate ( R.layout.camera , container , false );
+
+
+        textureView = ( TextureView ) root;
+
+        stateCallback = new CameraDevice.StateCallback ( ) {
+
+
             @Override
-            public void onConfigured ( CameraCaptureSession session ) {
-                if ( cameraDevice == null ) {
-                    return;
-                }
-                cameraCaptureSession = session;
+            public void onOpened ( CameraDevice camera ) {
+
+                System.err.println ( "________________________________________________" );
+                System.err.println ( "cameraIndex : " + cameraIndex + " : onOpened" );
+                System.err.println ( "________________________________________________" );
+                cameraDevice = camera;
                 try {
-                    updatePreview ( );
+                    createCameraPreview ( );
                 }
                 catch ( CameraAccessException e ) {
                     e.printStackTrace ( );
@@ -155,37 +110,101 @@ public class camera1 extends Fragment {
             }
 
             @Override
-            public void onConfigureFailed ( CameraCaptureSession session ) {
-                Toast.makeText ( getContext ( ) , "Configure Failed" , Toast.LENGTH_SHORT ).show ( );
+            public void onDisconnected ( CameraDevice camera ) {
+                System.err.println ( "________________________________________________" );
+                System.err.println ( "cameraIndex : " + cameraIndex + " : onDisconnected" );
+                System.err.println ( "________________________________________________" );
+                cameraDevice.close ( );
+            }
+
+            @Override
+            public void onError ( CameraDevice camera , int error ) {
+                System.err.println ( "________________________________________________" );
+                System.err.println ( "cameraIndex : " + cameraIndex + " : onError" );
+                System.err.println ( "________________________________________________" );
+
+
+                System.err.println ( error );
+
+                //todo
+                try {
+                    cameraDevice.close ( );
+                }
+                catch ( Exception e ) {
+                    System.err.println ( "________________________________________________" );
+                    e.printStackTrace ( );
+                    System.err.println ( "________________________________________________" );
+                }
+                cameraDevice = null;
+            }
+        };
+
+        surfaceTextureListener = new TextureView.SurfaceTextureListener ( ) {
+            @Override
+            public void onSurfaceTextureAvailable (
+                    SurfaceTexture surface , int width , int height
+            ) {
+                try {
+                    openCamera ( );
+                }
+                catch ( CameraAccessException e ) {
+                    e.printStackTrace ( );
+                }
+            }
+
+            @Override
+            public void onSurfaceTextureSizeChanged (
+                    SurfaceTexture surface , int width , int height
+            ) {
 
             }
-        } , null );
-    }
 
-    private void updatePreview ( ) throws CameraAccessException {
-        if ( cameraDevice == null ) {
-            return;
-        }
-        captureRequestBuilder.set ( CaptureRequest.CONTROL_MODE ,
-                                    CameraMetadata.CONTROL_MODE_AUTO );
-        cameraCaptureSession.setRepeatingRequest ( captureRequestBuilder.build ( ) , null ,
-                                                   mBackgroundHandler );
-    }
+            @Override
+            public boolean onSurfaceTextureDestroyed ( SurfaceTexture surface ) {
+                return false;
+            }
 
-    @Override
-    public View onCreateView (
-            LayoutInflater inflater , ViewGroup container , Bundle savedInstanceState
-    ) {
-        // Inflate the layout for this fragment
-        View root = inflater.inflate ( R.layout.camera1 , container , false );
+            @Override
+            public void onSurfaceTextureUpdated ( SurfaceTexture surface ) {
 
-
-        textureView = root.findViewById ( R.id.textureView );
-
-
+            }
+        };
 
         return root;
     }
+
+    @Override
+    public void onResume ( ) {
+        super.onResume ( );
+
+        startBackgroundThread ( );
+        if ( textureView.isAvailable ( ) ) {
+            try {
+                openCamera ( );
+            }
+            catch ( CameraAccessException e ) {
+                e.printStackTrace ( );
+            }
+        }
+        else {
+            textureView.setSurfaceTextureListener ( surfaceTextureListener );
+        }
+
+    }
+
+    @Override
+    public void onPause ( ) {
+        try {
+            stopBackgroundThread ( );
+        }
+        catch ( InterruptedException e ) {
+            e.printStackTrace ( );
+        }
+
+        super.onPause ( );
+
+    }
+
 
     private void openCamera ( ) throws CameraAccessException {
         CameraManager cameraManager =
@@ -215,15 +234,10 @@ public class camera1 extends Fragment {
                 streamConfigurationMap.getOutputSizes ( SurfaceTexture.class )[ outputSize ];
 
         if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
-            if (  ActivityCompat.checkSelfPermission ( getActivity() , Manifest.permission.CAMERA ) != PackageManager.PERMISSION_GRANTED
-                  || ActivityCompat.checkSelfPermission ( getActivity() ,
-                                                         Manifest.permission.WRITE_EXTERNAL_STORAGE ) != PackageManager.PERMISSION_GRANTED
-                  || ActivityCompat.checkSelfPermission ( getActivity() ,
-                                                         Manifest.permission.RECORD_AUDIO ) != PackageManager.PERMISSION_GRANTED
-                  || ActivityCompat.checkSelfPermission ( getActivity() ,
-                                                         Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            if ( ActivityCompat.checkSelfPermission ( getActivity ( ) ,
+                                                      Manifest.permission.CAMERA ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission ( getActivity ( ) , Manifest.permission.WRITE_EXTERNAL_STORAGE ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission ( getActivity ( ) , Manifest.permission.RECORD_AUDIO ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission ( getActivity ( ) , Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
 
-                checkPermissions ();
+                checkPermissions ( );
                 return;
             }
         }
@@ -355,14 +369,54 @@ public class camera1 extends Fragment {
         outputStream.close ( );
     }
 
+    private void createCameraPreview ( ) throws CameraAccessException {
+        SurfaceTexture texture = textureView.getSurfaceTexture ( );
+        texture.setDefaultBufferSize ( imageDimensions.getWidth ( ) ,
+                                       imageDimensions.getHeight ( ) );
+        Surface surface = new Surface ( texture );
+        captureRequestBuilder = cameraDevice.createCaptureRequest ( CameraDevice.TEMPLATE_PREVIEW );
+        captureRequestBuilder.addTarget ( surface );
+
+        cameraDevice.createCaptureSession ( Arrays.asList ( surface ) ,
+                                            new CameraCaptureSession.StateCallback ( ) {
+            @Override
+            public void onConfigured ( CameraCaptureSession session ) {
+                if ( cameraDevice == null ) {
+                    return;
+                }
+                cameraCaptureSession = session;
+                try {
+                    updatePreview ( );
+                }
+                catch ( CameraAccessException e ) {
+                    e.printStackTrace ( );
+                }
+            }
+
+            @Override
+            public void onConfigureFailed ( CameraCaptureSession session ) {
+                Toast.makeText ( getContext ( ) , "Configure Failed" , Toast.LENGTH_SHORT ).show ( );
+
+            }
+        } , null );
+    }
+
+    private void updatePreview ( ) throws CameraAccessException {
+        if ( cameraDevice == null ) {
+            return;
+        }
+        captureRequestBuilder.set ( CaptureRequest.CONTROL_MODE ,
+                                    CameraMetadata.CONTROL_MODE_AUTO );
+        cameraCaptureSession.setRepeatingRequest ( captureRequestBuilder.build ( ) , null ,
+                                                   mBackgroundHandler );
+    }
 
     private void startBackgroundThread ( ) {
-        mBackgroundThread = new HandlerThread ( "Camera Background" );
+        mBackgroundThread = new HandlerThread ( "Camera Background" + cameraIndex );
         mBackgroundThread.start ( );
 
         mBackgroundHandler = new Handler ( mBackgroundThread.getLooper ( ) );
     }
-
 
     private void stopBackgroundThread ( ) throws InterruptedException {
         mBackgroundThread.quitSafely ( );
@@ -371,45 +425,13 @@ public class camera1 extends Fragment {
         mBackgroundHandler = null;
     }
 
-    @Override
-    public void onResume ( ) {
-        super.onResume ( );
-
-        startBackgroundThread ( );
-        if ( textureView.isAvailable ( ) ) {
-            try {
-                openCamera ( );
-            }
-            catch ( CameraAccessException e ) {
-                e.printStackTrace ( );
-            }
-        }
-        else {
-            textureView.setSurfaceTextureListener ( surfaceTextureListener );
-        }
-
-    }
-
-    @Override
-    public void onPause ( ) {
-        try {
-            stopBackgroundThread ( );
-        }
-        catch ( InterruptedException e ) {
-            e.printStackTrace ( );
-        }
-
-        super.onPause ( );
-
-    }
-
-    public void checkPermissions(){
-            ActivityCompat.requestPermissions ( getActivity() ,
-                                                new String[] {
-                                                        Manifest.permission.CAMERA
-                                                        , Manifest.permission.WRITE_EXTERNAL_STORAGE
-                                                        , Manifest.permission.RECORD_AUDIO
-                                                        , Manifest.permission.ACCESS_FINE_LOCATION } , 1 );
+    public void checkPermissions ( ) {
+        ActivityCompat.requestPermissions ( getActivity ( ) ,
+                                            new String[] { Manifest.permission.CAMERA ,
+                                                    Manifest.permission.WRITE_EXTERNAL_STORAGE ,
+                                                    Manifest.permission.RECORD_AUDIO ,
+                                                    Manifest.permission.ACCESS_FINE_LOCATION } ,
+                                            1 );
 
     }
 }

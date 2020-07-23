@@ -95,7 +95,6 @@ public class camera extends Fragment {
 
         stateCallback = new CameraDevice.StateCallback ( ) {
 
-
             @Override
             public void onOpened ( CameraDevice camera ) {
 
@@ -225,6 +224,7 @@ public class camera extends Fragment {
 
         Size[] d = streamConfigurationMap.getOutputSizes ( SurfaceTexture.class );
 
+        Toast.makeText ( getActivity () , "you have "+s.length+" cameras" , Toast.LENGTH_SHORT ).show ( );
         System.err.println ( " \n\n\n\n\n ****************************************************" + s.length + " \n\n\n\n\n ****************************************************" );
         System.err.println ( " \n\n\n\n\n ****************************************************" + d.length + " \n\n\n\n\n ****************************************************" );
 //        for ( int i = 0 ; i < d.length ; i++ ) {

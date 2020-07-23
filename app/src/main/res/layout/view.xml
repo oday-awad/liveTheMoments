@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/camera2" >
+        app:layout_constraintTop_toBottomOf="@id/camera2">
 
     </FrameLayout>
 
@@ -44,32 +44,35 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageButton
-            android:id="@+id/imageButton1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#00000000"
-            app:srcCompat="@android:drawable/ic_menu_camera"
-            android:contentDescription="@string/todo" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/imageButton1"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="#00000000"-->
+            <!--android:contentDescription="@string/todo"-->
+            <!--app:srcCompat="@android:drawable/ic_menu_camera"-->
+            <!--tools:visibility="gone" />-->
 
-        <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#00000000"
-            app:srcCompat="@android:drawable/ic_menu_camera"
-            android:contentDescription="@string/todo" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/imageButton2"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="#00000000"-->
+            <!--android:contentDescription="@string/todo"-->
+            <!--app:srcCompat="@android:drawable/ic_menu_camera"-->
+            <!--tools:visibility="gone" />-->
 
-        <ImageButton
-            android:id="@+id/imageButton3"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#00000000"
-            app:srcCompat="@android:drawable/ic_menu_camera"
-            android:contentDescription="@string/todo" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/imageButton3"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="#00000000"-->
+            <!--android:contentDescription="@string/todo"-->
+            <!--app:srcCompat="@android:drawable/ic_menu_camera"-->
+            <!--tools:visibility="gone" />-->
 
         <ImageButton
             android:id="@+id/swap"
@@ -77,8 +80,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#00000000"
-            app:srcCompat="@drawable/ic_swap"
-            android:contentDescription="@string/todo" />
+            android:contentDescription="@string/todo"
+            android:padding="4dp"
+            app:srcCompat="@drawable/ic_swap" />
     </LinearLayout>
 
 
